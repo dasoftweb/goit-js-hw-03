@@ -34,6 +34,11 @@ const account = {
    * после чего добавляет его в историю транзакций
    */
   deposit(amount) {
+    if (typeof amount !== "number" || amount < 1) {
+      console.log(`Неверная сумма для пополнения`);
+      return;
+    }
+
     const transaction = this.createTransaction(amount, Transaction.DEPOSIT);
     this.transactions.push(transaction);
     this.balance += amount;
@@ -50,20 +55,20 @@ const account = {
    * о том, что снятие такой суммы не возможно, недостаточно средств.
    */
   withdraw(amount) {
-    if (typeof amount !== "number" || amount < 0) {
+    if (typeof amount !== "number" || amount < 1) {
       console.log(`Неверная сумма для снятия`);
       return;
     }
 
     if (amount > this.balance) {
-      console.log(`Недостаточно средств для снятия`);
+      console.log(`Недостаточно средств для снятия: ${amount}`);
       return;
     }
 
     const transaction = this.createTransaction(amount, Transaction.WITHDRAW);
     this.transactions.push(transaction);
     this.balance -= amount;
-    console.log(`Баланc уменшен на: ${amount}`);
+    console.log(`С баланса списано: ${amount}`);
   },
 
   /*
@@ -102,13 +107,14 @@ const account = {
 };
 
 console.log(account.getBalance());
-account.deposit(5000);
-account.withdraw(1000);
+account.deposit(10000);
 account.withdraw(1000);
 account.withdraw(2000);
+account.withdraw(3000);
 console.log(account.getBalance());
 account.deposit(3000);
 account.withdraw(20000);
 console.log(account.getTransactionDetails(5));
 console.log(account.getTransactionTotal("deposit"));
 console.log(account.getTransactionTotal("withdraw"));
+console.log(account.getBalance());
